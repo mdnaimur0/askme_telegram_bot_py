@@ -1,0 +1,9 @@
+
+/__pycache__
+/.venv
+/.vscode
+/fbbot.py
+/.env
+/logs.txt
+/test.py
+/debug.py
