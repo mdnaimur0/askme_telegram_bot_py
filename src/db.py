@@ -3,7 +3,7 @@ from models import User
 
 
 def get_db() -> sqlite3.Connection:
-    return sqlite3.connect("info.db")
+    return sqlite3.connect("users.db")
 
 
 def init():
@@ -89,3 +89,7 @@ def update_credit(chat_id, credit):
         return False
     finally:
         con.commit()
+
+
+if __name__ == "__main__":
+    init()  # Run this once to create the database

@@ -1,9 +1,8 @@
 
-/__pycache__
-/.venv
+/info.json
 /.vscode
-/fbbot.py
+/src/test.py
 /.env
-/logs.txt
-/test.py
-/debug.py
+/src/__pycache__
+/src/users.db
+/src/dummy.py

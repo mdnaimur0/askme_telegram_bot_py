@@ -17,8 +17,8 @@ MONTHLY_CREDIT = 15
 IS_SERVICE_AVAILABLE = True
 
 
-async def get_updates(offset):
-    return bot.get_updates(poll_timeout=10*60, error_as_empty=True, offset=offset)
+def get_updates(offset):
+    return bot.get_updates(poll_timeout=10 * 60, error_as_empty=True, offset=offset)
 
 
 def handle_monthly_rewards():
@@ -37,34 +37,28 @@ def handle_monthly_rewards():
     return len(users)
 
 
-async def handle_update(update: Update):
+def handle_update(update: Update):
     if update.message is not None:
         message: Message = update.message
         if message.text is not None:
             if message.text.startswith("/"):
-               await handle_command(message)
+                handle_command(message)
             else:
-                await handle_text_message(message)
+                handle_text_message(message)
         else:
-            await handle_nontext_message(message)
+            handle_nontext_message(message)
 
     elif update.callback_query is not None:
-        await handle_callback_query(update)
+        handle_callback_query(update)
 
 
-async def handle_text_message(message: Message):
+def handle_text_message(message: Message):
     chat_id, msg_id = get_id(message)
-    _ = set_typing(chat_id)
+    set_typing(chat_id)
     user = db.get_user(chat_id)
     if user is None:
         db.add_user(get_user_from_message(message=message, credit=NEW_USER_CREDIT - 1))
     else:
-        if IS_SERVICE_AVAILABLE == False:
-            bot.send_message(
-                chat_id=chat_id,
-                text="Service is currently unavailable.I will let you know when it's available.Thanks for your patience.",
-            )
-            return
         if user.credit <= 0:
             text, parse_mode = strings.get_insufficient_credit_reply()
             bot.send_message(
@@ -75,7 +69,14 @@ async def handle_text_message(message: Message):
                 reply_markup=get_refer_reply_markup(),
             )
             return
-    text = await brain.get_response(message.text)
+    if IS_SERVICE_AVAILABLE == False:
+        bot.send_message(
+            chat_id=chat_id,
+            text="Service is currently unavailable.I will let you know when it's available.Thanks for your patience.",
+        )
+        return
+
+    text = brain.get_response(message.text)
     bot.send_message(
         chat_id=chat_id,
         text=(
@@ -96,7 +97,7 @@ async def handle_text_message(message: Message):
             )
 
 
-async def handle_command(message: Message):
+def handle_command(message: Message):
     chat_id, msg_id = get_id(message)
     text = message.text
     user = db.get_user(chat_id)
@@ -152,7 +153,7 @@ async def handle_command(message: Message):
         )
 
 
-async def handle_callback_query(update: Update):
+def handle_callback_query(update: Update):
     message = get_message(update)
     chat_id, msg_id = get_id(message)
     query: CallbackQuery = update.callback_query

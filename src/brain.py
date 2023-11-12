@@ -3,11 +3,11 @@ import openai, creds
 openai.api_key = creds.GPT_TOKEN
 
 
-async def get_response(text):
+def get_response(text):
     messages = [
         {
             "role": "system",
-            "content": "Your name is AskMe. You are a helpful assistant bot. You will ask whatever you are asked in short with appropriate emojis.",
+            "content": "Your name is AskMe. You are a helpful assistant bot. You will answer whatever you are asked. Keep your answers short and simple. You can use emojis.",
         },
         {
             "role": "system",
@@ -28,7 +28,7 @@ async def get_response(text):
     request_count = 0
     
     response = None
-    while response is None and request_count < 10:
+    while response is None and request_count < 5:
         response = call_api()
         request_count += 1
         
